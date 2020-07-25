@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
-
-import { ItemListResponse, DeliveriesService } from '../deliveries.service';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-list',
@@ -10,21 +9,16 @@ import { ItemListResponse, DeliveriesService } from '../deliveries.service';
   styleUrls: ['./list.component.scss'],
 })
 export class ListComponent implements OnInit {
-  items: ItemListResponse[] = [];
+  items: Observable<any>;
 
   constructor(
-    private readonly service: DeliveriesService,
-    private readonly router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.service.getItemList().subscribe((list) => {
-      this.items = list.map((item) => {
-        item.lastUpdate = moment(item.lastUpdate).format('lll');
-        return item;
-      });
-    });
+    private readonly router: Router,
+    private readonly firestore: AngularFirestore
+  ) {
+    this.items = firestore.collection('deliveryList').valueChanges();
   }
+
+  ngOnInit(): void {}
 
   navigateToDetails(id: number) {
     this.router.navigate(['deliveries/details'], { queryParams: { id } });

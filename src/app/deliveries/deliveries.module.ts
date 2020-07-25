@@ -3,11 +3,15 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 import { DeliveriesComponent } from './deliveries.component';
 import { ListComponent } from './list/list.component';
 import { DetailsComponent } from './details/details.component';
-import { DeliveriesService } from './deliveries.service';
+import { environment } from '../../environments/environment';
+import { MomentPipe } from '../../common/moment.pipe';
 
 const routes: Routes = [
   {
@@ -32,14 +36,21 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [DeliveriesComponent, ListComponent, DetailsComponent],
+  declarations: [
+    DeliveriesComponent,
+    ListComponent,
+    DetailsComponent,
+    MomentPipe,
+  ],
   imports: [
     CommonModule,
     HttpClientModule,
     LeafletModule,
     RouterModule.forChild(routes),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAnalyticsModule,
+    AngularFirestoreModule,
   ],
   exports: [RouterModule, DeliveriesComponent],
-  providers: [DeliveriesService],
 })
 export class DeliveriesModule {}
