@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 import { DeliveriesComponent } from './deliveries.component';
 import { ListComponent } from './list/list.component';
@@ -32,7 +33,12 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [DeliveriesComponent, ListComponent, DetailsComponent],
-  imports: [CommonModule, HttpClientModule, RouterModule.forChild(routes)],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    LeafletModule,
+    RouterModule.forChild(routes),
+  ],
   exports: [RouterModule, DeliveriesComponent],
   providers: [DeliveriesService],
 })

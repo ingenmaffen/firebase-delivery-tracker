@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 import { ItemListResponse, DeliveriesService } from '../deliveries.service';
 
@@ -18,12 +19,14 @@ export class ListComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.getItemList().subscribe((list) => {
-      this.items = list;
+      this.items = list.map((item) => {
+        item.lastUpdate = moment(item.lastUpdate).format('lll');
+        return item;
+      });
     });
   }
 
   navigateToDetails(id: number) {
     this.router.navigate(['deliveries/details'], { queryParams: { id } });
-    console.log(id);
   }
 }

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { tileLayer, latLng, marker } from 'leaflet';
+import * as moment from 'moment';
+
+import { DeliveriesService } from '../deliveries.service';
 
 @Component({
   selector: 'app-details',
@@ -7,9 +11,54 @@ import { Router } from '@angular/router';
   styleUrls: ['./details.component.scss'],
 })
 export class DetailsComponent implements OnInit {
-  constructor(private readonly router: Router) {}
+  deliveryTypes: any[] = [
+    {
+      value: 'bike',
+      name: 'Bike',
+    },
+    {
+      value: 'car',
+      name: 'Car',
+    },
+  ];
 
-  ngOnInit(): void {}
+  mapOptions = {
+    layers: [
+      tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '...',
+      }),
+    ],
+    zoom: 5,
+    center: latLng(10, 10),
+  };
+  mapLayers = [];
+
+  events;
+
+  constructor(
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly service: DeliveriesService
+  ) {}
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.queryParams.id;
+    if (id) {
+      this.service.getItemDetails(id).subscribe((details) => {
+        // TODO: fit boundaries
+        details.waypoints.forEach((waypoint) => {
+          this.mapLayers.push(marker([waypoint.lat, waypoint.lng]));
+        });
+        this.events = details.events.map((event) => {
+          event.dateTime = moment(event.dateTime).format('lll');
+          return event;
+        });
+      });
+    } else {
+      this.backToList();
+    }
+  }
 
   backToList() {
     this.router.navigate(['deliveries/list']);

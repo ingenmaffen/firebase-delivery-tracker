@@ -1,2 +1,29 @@
-<button class="btn btn-dark" (click)="backToList()">Back</button>
-<!-- TODO: add dropdown, add map, add cards -->
+<div class="details-header-container">
+  <button class="btn btn-dark" (click)="backToList()">Back</button>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="delivery-type">Delivery Type</label>
+    </div>
+    <select class="custom-select" id="delivery-type">
+      <option *ngFor="let type of deliveryTypes">{{ type.name }}</option>
+    </select>
+  </div>
+</div>
+<div *ngIf="events" class="details-content-container">
+  <div class="map-container">
+    <div class="card">
+      <div
+        style="height: 300px;"
+        leaflet
+        [leafletOptions]="mapOptions"
+        [leafletLayers]="mapLayers"
+      ></div>
+    </div>
+  </div>
+  <div class="cards-container">
+    <div *ngFor="let event of events" class="card">
+      {{ event.status }}
+      {{ event.dateTime }}
+    </div>
+  </div>
+</div>
