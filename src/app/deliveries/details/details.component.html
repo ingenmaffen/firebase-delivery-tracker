@@ -4,8 +4,15 @@
     <div class="input-group-prepend">
       <label class="input-group-text" for="delivery-type">Delivery Type</label>
     </div>
-    <select class="custom-select" id="delivery-type">
-      <option *ngFor="let type of deliveryTypes">{{ type.name }}</option>
+    <select
+      class="custom-select"
+      id="delivery-type"
+      [(ngModel)]="deliveryType"
+      (change)="onTypeChange($event)"
+    >
+      <option *ngFor="let type of deliveryTypes" [value]="type.value">{{
+        type.name
+      }}</option>
     </select>
   </div>
 </div>

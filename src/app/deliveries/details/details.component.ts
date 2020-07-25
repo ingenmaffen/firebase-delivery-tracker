@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { tileLayer, latLng, marker, featureGroup } from 'leaflet';
+import { tileLayer, latLng, marker, featureGroup, icon } from 'leaflet';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as moment from 'moment';
 
@@ -10,6 +10,8 @@ import * as moment from 'moment';
   styleUrls: ['./details.component.scss'],
 })
 export class DetailsComponent implements OnInit {
+  deliveryType: string = 'bike';
+
   deliveryTypes: any[] = [
     {
       value: 'bike',
@@ -35,6 +37,7 @@ export class DetailsComponent implements OnInit {
   fitBounds = null;
 
   events;
+  waypoints;
 
   constructor(
     private readonly router: Router,
@@ -51,12 +54,8 @@ export class DetailsComponent implements OnInit {
         .get()
         .then((value) => {
           const details = value.docs[0].data();
-          console.log(details.waypoints);
-          details.waypoints.forEach((waypoint) => {
-            this.mapLayers.push(
-              marker([waypoint.latlng.oa, waypoint.latlng.ha])
-            );
-          });
+          this.waypoints = details.waypoints;
+          this.drawWaypoints(this.waypoints);
           const group = featureGroup(this.mapLayers);
           this.fitBounds = group.getBounds();
           this.events = details.events.map((event) => {
@@ -73,5 +72,40 @@ export class DetailsComponent implements OnInit {
 
   backToList() {
     this.router.navigate(['deliveries/list']);
+  }
+
+  onTypeChange(_event) {
+    console.log(this.deliveryType);
+    this.drawWaypoints(this.waypoints);
+  }
+
+  private drawWaypoints(waypoints) {
+    this.mapLayers = [];
+    waypoints.forEach((waypoint, index) => {
+      this.mapLayers.push(
+        marker([waypoint.latlng.oa, waypoint.latlng.ha], {
+          icon: icon({ iconUrl: this.selectIcon(waypoint.marker) }),
+        })
+      );
+    });
+  }
+
+  private selectIcon(iconType: string): string {
+    let url = 'assets/';
+    switch (iconType) {
+      case 'courrier':
+        url +=
+          this.deliveryType === 'bike'
+            ? 'pedal_bike-24px.svg'
+            : 'local_shipping-24px.svg';
+        break;
+      case 'address':
+        url += 'home-24px.svg';
+        break;
+      default:
+        url += 'store-black-18dp.svg';
+        break;
+    }
+    return url;
   }
 }

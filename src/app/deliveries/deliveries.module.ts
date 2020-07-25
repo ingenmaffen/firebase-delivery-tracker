@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -46,6 +47,7 @@ const routes: Routes = [
     CommonModule,
     HttpClientModule,
     LeafletModule,
+    FormsModule,
     RouterModule.forChild(routes),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAnalyticsModule,
