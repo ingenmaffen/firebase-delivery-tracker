@@ -20,7 +20,7 @@
   <div class="map-container">
     <div class="card">
       <div
-        style="height: 300px;"
+        style="min-height: 300px;"
         leaflet
         [leafletOptions]="mapOptions"
         [leafletLayers]="mapLayers"
@@ -30,7 +30,7 @@
   </div>
   <div class="cards-container">
     <div *ngFor="let event of events" class="card">
-      {{ event.status }}
+      {{ event.status }}<br />
       {{ event.dateTime }}
     </div>
   </div>

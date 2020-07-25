@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { tileLayer, latLng, marker, featureGroup, icon } from 'leaflet';
+import {
+  tileLayer,
+  latLng,
+  marker,
+  featureGroup,
+  icon,
+  polyline,
+} from 'leaflet';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as moment from 'moment';
 
@@ -88,6 +95,19 @@ export class DetailsComponent implements OnInit {
         })
       );
     });
+    this.drawLines(waypoints);
+  }
+
+  private drawLines(waypoints) {
+    const places = waypoints.filter(
+      (waypoint) => waypoint.marker !== 'courier'
+    );
+    for (let i = 0; i < places.length - 1; i++) {
+      const latlngs = [];
+      latlngs.push([waypoints[i].latlng.oa, waypoints[i].latlng.ha]);
+      latlngs.push([waypoints[i + 1].latlng.oa, waypoints[i + 1].latlng.ha]);
+      this.mapLayers.push(polyline(latlngs, { color: '#003399' }));
+    }
   }
 
   private selectIcon(iconType: string): string {
