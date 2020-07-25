@@ -93,7 +93,7 @@ export class DetailsComponent implements OnInit {
   private selectIcon(iconType: string): string {
     let url = 'assets/';
     switch (iconType) {
-      case 'courrier':
+      case 'courier':
         url +=
           this.deliveryType === 'bike'
             ? 'pedal_bike-24px.svg'
